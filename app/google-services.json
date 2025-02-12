@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "22359332532",
+    "project_id": "astroshare-fb",
+    "storage_bucket": "astroshare-fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22359332532:android:846f439fdcf3cbb5d3e9e1",
+        "android_client_info": {
+          "package_name": "com.example.astroshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbuJhUTJFCorNJOkrYgwjBScF0GThs6-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22359332532:android:6c2c0abf94f4adb1d3e9e1",
+        "android_client_info": {
+          "package_name": "com.example.astroshareapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbuJhUTJFCorNJOkrYgwjBScF0GThs6-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

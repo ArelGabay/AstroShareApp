@@ -4,7 +4,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     kotlin("kapt")
-    id("kotlin-kapt")
 
 }
 
@@ -66,10 +65,11 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.9.1")
     implementation("com.google.firebase:firebase-auth:22.0.0")
     // SQLite and Room
-    implementation ("androidx.room:room-runtime:2.5.2")
+    implementation ("androidx.room:room-runtime:$room_version")
     implementation(libs.firebase.storage.ktx)
-    kapt ("androidx.room:room-compiler:2.5.2")
-    implementation ("androidx.room:room-ktx:2.5.2")
+    kapt ("androidx.room:room-compiler:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     // Cloudinary
     implementation("com.cloudinary:cloudinary-android:3.0.2")
@@ -82,7 +82,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     // Picasso
     implementation ("com.squareup.picasso:picasso:2.8")
-    implementation ("androidx.room:room-ktx:2.x.x")
+
 
 
     implementation(libs.androidx.core.ktx)

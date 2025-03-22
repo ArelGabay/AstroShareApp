@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AstroShare"
+rootProject.name = "AstroShareApp"
 include(":app")

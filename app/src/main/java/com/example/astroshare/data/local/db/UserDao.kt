@@ -6,18 +6,18 @@ import com.example.astroshare.data.local.db.entity.UserEntity
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun getUserById(id: String): UserEntity?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUser(user: UserEntity)
+
+    @Query("SELECT * FROM user WHERE id = :userId LIMIT 1")
+    suspend fun getUserById(userId: String): UserEntity?
 
     @Query("SELECT * FROM user")
     suspend fun getAllUsers(): List<UserEntity>
 
-    @Insert
-    suspend fun insertUser(user: UserEntity): Long
-
     @Update
-    suspend fun updateUser(user: UserEntity): Int
+    suspend fun updateUser(user: UserEntity)
 
     @Delete
-    suspend fun deleteUser(user: UserEntity): Int
+    suspend fun deleteUser(user: UserEntity)
 }

@@ -18,9 +18,9 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
 
-    fun registerWithImage(email: String, password: String, imageUri: Uri) {
+    fun registerWithImage(email: String, password: String, displayName: String, imageUri: Uri) {
         viewModelScope.launch {
-            val result = userRepository.registerWithImage(email, password, imageUri)
+            val result = userRepository.registerWithImage(email, password, displayName, imageUri)
             if (result.isSuccess) {
                 _registeredUser.value = result.getOrNull()
                 _error.value = null

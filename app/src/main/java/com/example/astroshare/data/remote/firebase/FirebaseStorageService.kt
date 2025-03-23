@@ -1,4 +1,3 @@
-// data/remote/firebase/FirebaseStorageService.kt
 package com.example.astroshare.data.remote.firebase
 
 import android.net.Uri
@@ -9,11 +8,12 @@ class FirebaseStorageService(private val storage: FirebaseStorage) {
 
     suspend fun uploadUserImage(userId: String, imageUri: Uri): String {
         val storageRef = storage.reference
-            .child("users")
-            .child(userId)
-            .child("profile.jpg")
+            .child("profileImages")   // folder name
+            .child("$userId.jpg")     // file name inside the folder
 
         storageRef.putFile(imageUri).await()
+
+        // Return the download URL
         return storageRef.downloadUrl.await().toString()
     }
 }

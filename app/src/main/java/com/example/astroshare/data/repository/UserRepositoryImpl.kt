@@ -17,32 +17,33 @@ class UserRepositoryImpl(
     private val storageService: FirebaseStorageService
 ) : UserRepository {
 
-    override suspend fun registerWithImage(email: String, password: String, imageUri: Uri): Result<User> =
-        withContext(Dispatchers.IO) {
+    override suspend fun registerWithImage(
+        email: String,
+        password: String,
+        displayName: String,
+        imageUri: Uri
+    ): Result<User> {
+        return withContext(Dispatchers.IO) {
             try {
-                // 1. Register with Firebase Auth
                 val firebaseUser = authService.registerUser(email, password)
                     ?: throw Exception("Registration failed")
 
                 val userId = firebaseUser.uid
 
-                // 2. Upload profile image to Firebase Storage
                 val imageUrl = storageService.uploadUserImage(userId, imageUri)
 
-                // 3. Create User model instance
                 val newUser = User(
                     id = userId,
-                    displayName = firebaseUser.displayName ?: "",
-                    email = firebaseUser.email ?: email,
-                    bio = "", // Default empty bio
+                    displayName = displayName,
+                    email = email,
+                    bio = "",
                     lastLogin = System.currentTimeMillis(),
                     loggedIn = true,
                     postsCount = 0,
                     profilePicture = imageUrl
                 )
 
-                // 4. Create Firestore user map
-                val userMap = mapOf(
+                val userMap: Map<String, Any> = mapOf(
                     "displayName" to newUser.displayName,
                     "email" to newUser.email,
                     "bio" to (newUser.bio ?: ""),
@@ -52,20 +53,16 @@ class UserRepositoryImpl(
                     "profilePicture" to (newUser.profilePicture ?: "")
                 )
 
-                // 5. Save to Firestore
                 firestoreService.saveUser(userId, userMap)
-
-                // 6. Save locally in Room
                 localDataSource.insertUser(newUser)
 
-                Log.d("RoomTest", "Inserted user with ID: ${newUser.id}")
-
                 Result.success(newUser)
+
             } catch (e: Exception) {
-                Log.e("UserRepository", "Error in registerWithImage", e)
                 Result.failure(e)
             }
         }
+    }
 
     override suspend fun login(email: String, password: String): Result<User> =
         withContext(Dispatchers.IO) {

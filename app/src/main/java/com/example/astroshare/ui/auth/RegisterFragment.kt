@@ -1,4 +1,3 @@
-// ui/auth/RegisterFragment.kt
 package com.example.astroshare.ui.auth
 
 import android.net.Uri
@@ -16,24 +15,30 @@ import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentRegisterBinding
 import com.example.astroshare.viewmodel.auth.RegisterViewModel
 import com.example.astroshare.viewmodel.auth.RegisterViewModelFactory
+import com.squareup.picasso.Picasso
 
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    // Instantiate the RegisterViewModel using our custom factory.
     private val registerViewModel: RegisterViewModel by viewModels {
         RegisterViewModelFactory((requireActivity().application as AstroShareApp).userRepository)
     }
 
-    // Launcher for picking an image from the gallery.
     private var selectedImageUri: Uri? = null
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             selectedImageUri = uri
-            // Set the selected image on the avatar ImageView.
-            binding.avatarImageView.setImageURI(uri)
+
+            Picasso.get()
+                .load(uri)
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .resize(120, 120)
+                .centerCrop()
+                .into(binding.avatarImageView)
         }
     }
 
@@ -48,32 +53,36 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // When the user clicks the avatar, launch the image picker.
+        // Default avatar in case user doesn't upload yet
+        Picasso.get()
+            .load(R.drawable.avatar)
+            .resize(120, 120)
+            .centerCrop()
+            .into(binding.avatarImageView)
+
         binding.avatarImageView.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
 
-        // When the Register button is clicked, validate fields and call register.
         binding.registerButton.setOnClickListener {
+            val name = binding.editTextName.text.toString().trim() // <- collect name
             val email = binding.editTextEmail.text.toString().trim()
             val password = binding.editTextPassword.text.toString().trim()
-            if (email.isNotEmpty() && password.isNotEmpty() && selectedImageUri != null) {
-                registerViewModel.registerWithImage(email, password, selectedImageUri!!)
+
+            if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && selectedImageUri != null) {
+                registerViewModel.registerWithImage(email, password, name, selectedImageUri!!)
             } else {
                 Toast.makeText(requireContext(), "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Observe the registeredUser LiveData to handle successful registration.
         registerViewModel.registeredUser.observe(viewLifecycleOwner) { user ->
             user?.let {
                 Toast.makeText(requireContext(), "Registration successful!", Toast.LENGTH_SHORT).show()
-                // Navigate back to Login or to Main screen as needed.
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             }
         }
 
-        // Observe error LiveData to show errors.
         registerViewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()

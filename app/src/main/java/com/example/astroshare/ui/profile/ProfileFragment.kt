@@ -1,23 +1,28 @@
-// ui/profile/ProfileFragment.kt
 package com.example.astroshare.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.astroshare.AstroShareApp
+import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentProfileBinding
 import com.example.astroshare.viewmodel.profile.ProfileViewModel
 import com.example.astroshare.viewmodel.profile.ProfileViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    // Instantiate ProfileViewModel using a custom factory, retrieving the userRepository from AstroShareApp.
+    // FirebaseAuth instance
+    private lateinit var auth: FirebaseAuth
+
     private val profileViewModel: ProfileViewModel by viewModels {
         ProfileViewModelFactory((requireActivity().application as AstroShareApp).userRepository)
     }
@@ -33,28 +38,44 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // For example, you can use a hard-coded userId or retrieve it from your auth system.
-        val userId = "your_user_id_here" // Replace this with the actual user ID
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
 
-        // Load the user's profile.
+        // Get the current user
+        val firebaseUser = auth.currentUser
+        if (firebaseUser == null) {
+            // If no user is logged in, go back to LoginFragment
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            return
+        }
+
+        val userId = firebaseUser.uid
+
+        // Load the user's profile from your Room/Firestore via ViewModel
         profileViewModel.loadUser(userId)
 
-        // Observe the user LiveData.
+        // Observe the user LiveData
         profileViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
-                // Update UI with user data.
                 binding.tvUsername.text = it.displayName
                 binding.tvEmail.text = it.email
-                // Update other UI elements as needed.
             }
         }
 
-        // Observe error LiveData to display any error messages.
+        // Observe any errors
         profileViewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
-                // For example, display the error in a Toast.
-                // Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Logout button logic
+        binding.btnLogout.setOnClickListener {
+            auth.signOut()
+            Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
+
+            // Navigate back to LoginFragment after logout
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
     }
 

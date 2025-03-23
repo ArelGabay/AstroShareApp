@@ -2,11 +2,11 @@ package com.example.astroshare.data.model
 
 data class User(
     val id: String = "",
-    val email: String = "",
     val displayName: String = "",
-    val profilePicture: String? = null,
+    val email: String = "",
     val bio: String? = null,
+    val lastLogin: Long = 0L,
+    val loggedIn: Boolean = false,
     val postsCount: Int = 0,
-    val lastLogin: Long = System.currentTimeMillis(),
-    val isLoggedIn: Boolean = false
+    val profilePicture: String? = null
 )

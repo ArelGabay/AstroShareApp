@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.RegisterFragment">
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F9F6FB">
 
-    <!-- Name Input -->
+    <ImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/avatar"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
     <EditText
         android:id="@+id/editTextName"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Name"
-        android:inputType="text"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="80dp"/>  <!-- Fixed -->
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Email Input -->
     <EditText
         android:id="@+id/editTextEmail"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Email"
         android:inputType="textEmailAddress"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/editTextName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>  <!-- Fixed -->
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Password Input -->
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Password"
         android:inputType="textPassword"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>  <!-- Fixed -->
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="24dp"/>
 
-    <!-- Register Button -->
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>  <!-- Fixed -->
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

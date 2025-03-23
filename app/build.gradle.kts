@@ -1,9 +1,10 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
+    kotlin("kapt")
+
 }
 
 android {
@@ -12,12 +13,17 @@ android {
 
     defaultConfig {
         applicationId = "com.example.astroshare"
-        minSdk = 29
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                argument("room.incremental", "true")
+            }
+        }
     }
 
     buildTypes {
@@ -29,61 +35,63 @@ android {
             )
         }
     }
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
-    }
-    viewBinding {
-        enable = true
-    }
-    dataBinding {
-        enable = true
-    }
-    buildFeatures {
-        viewBinding = true  // Enable View Binding
-    }
-
-    kapt {
-        javacOptions {
-            option("-source", "17")
-            option("-target", "17")
-        }
+        jvmTarget = "11"
     }
 
 }
 
+val room_version = "2.6.1"
+
 dependencies {
+// Implementations by me //
+    // Nav Graph
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.8.5")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.8.5")
+    // OSM Maps
+    implementation ("org.osmdroid:osmdroid-android:6.1.13")
+    // Location allowance
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-firestore:24.9.1")
+    implementation("com.google.firebase:firebase-auth:22.0.0")
+    // SQLite and Room
+    implementation ("androidx.room:room-runtime:$room_version")
+    implementation(libs.firebase.storage.ktx)
+    kapt ("androidx.room:room-compiler:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+    // Glide
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+    // OkHTTP
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    // Material
+    implementation ("com.google.android.material:material:1.9.0")
+    // Picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // Firebase BoM (Compatible with Kotlin 1.9.0)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-
-    // Firebase Authentication (Supports Kotlin 1.9.0)
-    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
-
-    // Firebase Firestore (If needed)
-    implementation("com.google.firebase:firebase-firestore-ktx:24.8.1")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    kapt("androidx.lifecycle:lifecycle-compiler:2.7.0") // Ensure version matches
 }

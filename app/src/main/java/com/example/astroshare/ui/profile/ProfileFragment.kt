@@ -14,13 +14,12 @@ import com.example.astroshare.databinding.FragmentProfileBinding
 import com.example.astroshare.viewmodel.profile.ProfileViewModel
 import com.example.astroshare.viewmodel.profile.ProfileViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-
-    // FirebaseAuth instance
     private lateinit var auth: FirebaseAuth
 
     private val profileViewModel: ProfileViewModel by viewModels {
@@ -37,45 +36,47 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Initialize FirebaseAuth
         auth = FirebaseAuth.getInstance()
 
-        // Get the current user
         val firebaseUser = auth.currentUser
         if (firebaseUser == null) {
-            // If no user is logged in, go back to LoginFragment
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+          findNavController().navigate(R.id.loginFragment)
             return
         }
-
         val userId = firebaseUser.uid
 
-        // Load the user's profile from your Room/Firestore via ViewModel
+        // Load user profile from local DB (and Firestore as fallback)
         profileViewModel.loadUser(userId)
 
-        // Observe the user LiveData
         profileViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.tvUsername.text = it.displayName
                 binding.tvEmail.text = it.email
+
+                if (!it.profilePicture.isNullOrEmpty()) {
+                    Picasso.get()
+                        .load(it.profilePicture)
+                        .placeholder(R.drawable.avatar)
+                        .error(R.drawable.avatar)
+                        .noFade()       // Disable fade-in animation for faster visual response
+                        .fit()          // Resize the image to fit the ImageView
+                        .centerCrop()   // Crop the image centered
+                        .into(binding.ivProfilePicture)
+                }
             }
         }
 
-        // Observe any errors
         profileViewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Logout button logic
         binding.btnLogout.setOnClickListener {
             auth.signOut()
             Toast.makeText(requireContext(), "Logged out", Toast.LENGTH_SHORT).show()
-
-            // Navigate back to LoginFragment after logout
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            // Navigate back to login
+            findNavController().navigate(R.id.loginFragment)
         }
     }
 

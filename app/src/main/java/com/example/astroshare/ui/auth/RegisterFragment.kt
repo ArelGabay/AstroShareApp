@@ -15,6 +15,7 @@ import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentRegisterBinding
 import com.example.astroshare.viewmodel.auth.RegisterViewModel
 import com.example.astroshare.viewmodel.auth.RegisterViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class RegisterFragment : Fragment() {
@@ -31,7 +32,6 @@ class RegisterFragment : Fragment() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             selectedImageUri = uri
-
             Picasso.get()
                 .load(uri)
                 .placeholder(R.drawable.avatar)
@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Default avatar in case user doesn't upload yet
+        // Set default avatar
         Picasso.get()
             .load(R.drawable.avatar)
             .resize(120, 120)
@@ -65,7 +65,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.registerButton.setOnClickListener {
-            val name = binding.editTextName.text.toString().trim() // <- collect name
+            val name = binding.editTextName.text.toString().trim()
             val email = binding.editTextEmail.text.toString().trim()
             val password = binding.editTextPassword.text.toString().trim()
 
@@ -76,9 +76,12 @@ class RegisterFragment : Fragment() {
             }
         }
 
+        // Observe registration result
         registerViewModel.registeredUser.observe(viewLifecycleOwner) { user ->
             user?.let {
-                Toast.makeText(requireContext(), "Registration successful!", Toast.LENGTH_SHORT).show()
+                // Sign out so that LoginFragment does not auto-redirect to profile
+                FirebaseAuth.getInstance().signOut()
+                Toast.makeText(requireContext(), "Registration successful! Please login.", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             }
         }

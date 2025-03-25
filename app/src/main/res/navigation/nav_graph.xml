@@ -1,37 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+    <!-- LOGIN + REGISTER -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.astroshare.ui.auth.LoginFragment"
-        android:label="Login" >
+        android:label="Login">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"/>
+        <!-- On successful login, go to mainFlow -->
         <action
-            android:id="@+id/action_loginFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_loginFragment_to_mainFlow"
+            app:destination="@id/mainFlow" />
     </fragment>
 
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.astroshare.ui.auth.RegisterFragment"
-        android:label="Register" >
+        android:label="Register">
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"/>
     </fragment>
 
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.astroshare.ui.profile.ProfileFragment"
-        android:label="Profile" >
-        <action
-            android:id="@+id/action_profileFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+    <!-- MAIN FLOW (Nested Graph for bottom nav) -->
+    <navigation
+        android:id="@+id/mainFlow"
+        app:startDestination="@id/exploreFragment">
 
+        <fragment
+            android:id="@+id/exploreFragment"
+            android:name="com.example.astroshare.ui.explore.ExploreFragment"
+            android:label="Explore"/>
+
+        <fragment
+            android:id="@+id/tripsFragment"
+            android:name="com.example.astroshare.ui.trips.TripsFragment"
+            android:label="Trips"/>
+
+        <fragment
+            android:id="@+id/friendsFragment"
+            android:name="com.example.astroshare.ui.friends.FriendFragment"
+            android:label="Friends"/>
+
+        <fragment
+            android:id="@+id/profileFragment"
+            android:name="com.example.astroshare.ui.profile.ProfileFragment"
+            android:label="Profile"/>
+
+        <fragment
+            android:id="@+id/uploadTripFragment"
+            android:name="com.example.astroshare.ui.trips.UploadTripFragment"
+            android:label="Upload Trip" />
+
+    </navigation>
 </navigation>

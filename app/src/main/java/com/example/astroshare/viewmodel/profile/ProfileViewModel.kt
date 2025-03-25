@@ -1,4 +1,3 @@
-// viewmodel/profile/ProfileViewModel.kt
 package com.example.astroshare.viewmodel.profile
 
 import androidx.lifecycle.LiveData

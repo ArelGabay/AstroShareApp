@@ -1,12 +1,13 @@
 package com.example.astroshare.data.repository
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.astroshare.data.local.UserLocalDataSource
 import com.example.astroshare.data.model.User
 import com.example.astroshare.data.remote.firebase.FirebaseAuthService
 import com.example.astroshare.data.remote.firebase.FirebaseFirestoreService
-import com.example.astroshare.data.remote.firebase.FirebaseStorageService
+import com.example.astroshare.data.remote.firebase.CloudinaryStorageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,7 +15,8 @@ class UserRepositoryImpl(
     private val localDataSource: UserLocalDataSource,
     private val authService: FirebaseAuthService,
     private val firestoreService: FirebaseFirestoreService,
-    private val storageService: FirebaseStorageService
+    private val cloudinaryService: CloudinaryStorageService,
+    private val appContext: Context
 ) : UserRepository {
 
     override suspend fun registerWithImage(
@@ -30,7 +32,8 @@ class UserRepositoryImpl(
 
                 val userId = firebaseUser.uid
 
-                val imageUrl = storageService.uploadUserImage(userId, imageUri)
+                // Upload the image via Cloudinary
+                val imageUrl = cloudinaryService.uploadUserImage(userId, imageUri, appContext)
 
                 val newUser = User(
                     id = userId,
@@ -67,16 +70,11 @@ class UserRepositoryImpl(
     override suspend fun login(email: String, password: String): Result<User> =
         withContext(Dispatchers.IO) {
             try {
-                // 1. Login via Firebase Auth
                 val firebaseUser = authService.loginUser(email, password)
                     ?: throw Exception("Login failed")
-
                 val userId = firebaseUser.uid
 
-                // 2. Try to get from local cache (Room)
                 var user = localDataSource.getUserById(userId)
-
-                // 3. If not found locally, fetch from Firestore
                 if (user == null) {
                     val userData = firestoreService.getUser(userId)
                     if (userData != null) {
@@ -90,14 +88,11 @@ class UserRepositoryImpl(
                             postsCount = (userData["postsCount"] as? Long)?.toInt() ?: 0,
                             profilePicture = userData["profilePicture"] as? String
                         )
-
-                        // Cache the user locally
                         localDataSource.insertUser(user)
                     } else {
                         throw Exception("User not found in Firestore")
                     }
                 }
-
                 Result.success(user)
             } catch (e: Exception) {
                 Log.e("UserRepository", "Error in login", e)
@@ -117,13 +112,8 @@ class UserRepositoryImpl(
                     "postsCount" to user.postsCount,
                     "profilePicture" to (user.profilePicture ?: "")
                 )
-
-                // Update Firestore
                 firestoreService.saveUser(user.id, userMap)
-
-                // Update Room local cache
                 localDataSource.updateUser(user)
-
                 Result.success(Unit)
             } catch (e: Exception) {
                 Log.e("UserRepository", "Error in updateUser", e)
@@ -134,12 +124,10 @@ class UserRepositoryImpl(
     override suspend fun deleteUser(userId: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                // Delete locally (optional: delete from Firestore if needed)
                 val user = localDataSource.getUserById(userId)
                 if (user != null) {
                     localDataSource.deleteUser(user)
                 }
-
                 Result.success(Unit)
             } catch (e: Exception) {
                 Log.e("UserRepository", "Error in deleteUser", e)

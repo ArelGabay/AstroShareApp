@@ -1,20 +1,20 @@
-// viewmodel/posts/PostsViewModel.kt
-package com.example.astroshare.viewmodel.posts
+
+package com.example.astroshare.viewmodel.trips
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.astroshare.data.model.Post
-import com.example.astroshare.data.repository.PostRepository
+import com.example.astroshare.data.model.Trip
+import com.example.astroshare.data.repository.TripRepository
 import kotlinx.coroutines.launch
 
-class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
+class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
 
-    // LiveData for posts list
-    private val _posts = MutableLiveData<List<Post>>()
-    val posts: LiveData<List<Post>> = _posts
+    // LiveData for trips list
+    private val _trips = MutableLiveData<List<Trip>>()
+    val trips: LiveData<List<Trip>> = _trips
 
     // LiveData for loading state
     private val _loading = MutableLiveData<Boolean>()
@@ -25,14 +25,14 @@ class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
     val error: LiveData<String?> = _error
 
     /**
-     * Loads posts from the repository.
+     * Loads trips from the repository.
      */
-    fun loadPosts() {
+    fun loadTrips() {
         viewModelScope.launch {
             _loading.value = true
             try {
-                val postsList = postRepository.getPosts()
-                _posts.value = postsList
+                val tripsList = tripRepository.getTrips()
+                _trips.value = tripsList
                 _error.value = null
             } catch (e: Exception) {
                 _error.value = e.message
@@ -43,17 +43,17 @@ class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
     }
 
     /**
-     * Creates a new post.
+     * Creates a new trip.
      */
-    fun createPost(post: Post) {
+    fun createTrip(trip: Trip) {
         viewModelScope.launch {
             try {
-                val result = postRepository.createPost(post)
+                val result = tripRepository.createTrip(trip)
                 if (result.isSuccess) {
-                    // Optionally reload posts to update UI
-                    loadPosts()
+                    // Optionally reload trips to update UI
+                    loadTrips()
                 } else {
-                    _error.value = result.exceptionOrNull()?.message ?: "Error creating post"
+                    _error.value = result.exceptionOrNull()?.message ?: "Error creating trip"
                 }
             } catch (e: Exception) {
                 _error.value = e.message
@@ -62,16 +62,16 @@ class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
     }
 
     /**
-     * Updates an existing post.
+     * Updates an existing trip.
      */
-    fun updatePost(postId: String, updatedPost: Post) {
+    fun updateTrip(tripId: String, updatedTrip: Trip) {
         viewModelScope.launch {
             try {
-                val result = postRepository.updatePost(postId, updatedPost)
+                val result = tripRepository.updateTrip(tripId, updatedTrip)
                 if (result.isSuccess) {
-                    loadPosts()
+                    loadTrips()
                 } else {
-                    _error.value = result.exceptionOrNull()?.message ?: "Error updating post"
+                    _error.value = result.exceptionOrNull()?.message ?: "Error updating trip"
                 }
             } catch (e: Exception) {
                 _error.value = e.message
@@ -80,16 +80,16 @@ class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
     }
 
     /**
-     * Deletes a post.
+     * Deletes a trip.
      */
-    fun deletePost(postId: String) {
+    fun deleteTrip(tripId: String) {
         viewModelScope.launch {
             try {
-                val result = postRepository.deletePost(postId)
+                val result = tripRepository.deleteTrip(tripId)
                 if (result.isSuccess) {
-                    loadPosts()
+                    loadTrips()
                 } else {
-                    _error.value = result.exceptionOrNull()?.message ?: "Error deleting post"
+                    _error.value = result.exceptionOrNull()?.message ?: "Error deleting trip"
                 }
             } catch (e: Exception) {
                 _error.value = e.message
@@ -99,9 +99,11 @@ class PostsViewModel(private val postRepository: PostRepository) : ViewModel() {
 
     /**
      * Uploads an image and returns its download URL.
-     * You can call this function from your UI (if needed) to first upload the image, then create the post.
+     * You can call this function from your UI (if needed) to first upload the image, then create the triptr.
      */
     suspend fun uploadImage(imageUri: Uri): String {
-        return postRepository.uploadImage(imageUri)
+        return tripRepository.uploadImage(imageUri)
     }
+
+
 }

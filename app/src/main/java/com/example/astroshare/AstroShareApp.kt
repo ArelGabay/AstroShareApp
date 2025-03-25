@@ -3,49 +3,66 @@ package com.example.astroshare
 import android.app.Application
 import androidx.room.Room
 import com.example.astroshare.data.local.UserLocalDataSource
+import com.example.astroshare.data.local.TripLocalDataSource
 import com.example.astroshare.data.local.db.AppDatabase
 import com.example.astroshare.data.remote.firebase.FirebaseAuthService
 import com.example.astroshare.data.remote.firebase.FirebaseFirestoreService
-import com.example.astroshare.data.remote.firebase.FirebaseStorageService
+import com.example.astroshare.data.remote.firebase.CloudinaryStorageService
+import com.example.astroshare.data.repository.TripRepository
+import com.example.astroshare.data.repository.TripRepositoryImpl
 import com.example.astroshare.data.repository.UserRepository
 import com.example.astroshare.data.repository.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 
 class AstroShareApp : Application() {
 
-    // Expose the Room database publicly.
     lateinit var database: AppDatabase
         private set
 
     lateinit var userRepository: UserRepository
         private set
 
+    lateinit var tripRepository: TripRepository
+        private set
+
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize Room database and assign to our public property.
+        // Initialize the Room database (using destructive migration for development)
         database = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
             "astroshare_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
         // Initialize local data sources
         val userLocalDataSource = UserLocalDataSource(database.userDao())
+        val tripLocalDataSource = TripLocalDataSource(database.tripDao())
 
         // Initialize Firebase services
         val firebaseAuthService = FirebaseAuthService(FirebaseAuth.getInstance())
         val firebaseFirestoreService = FirebaseFirestoreService(FirebaseFirestore.getInstance())
-        val firebaseStorageService = FirebaseStorageService(FirebaseStorage.getInstance())
+
+        // Initialize Cloudinary Storage Service (used for both user and trip images)
+        val cloudinaryStorageService = CloudinaryStorageService()
 
         // Initialize repositories
         userRepository = UserRepositoryImpl(
             localDataSource = userLocalDataSource,
             authService = firebaseAuthService,
             firestoreService = firebaseFirestoreService,
-            storageService = firebaseStorageService
+            cloudinaryService = cloudinaryStorageService,
+            appContext = applicationContext
+        )
+
+        tripRepository = TripRepositoryImpl(
+            localDataSource = tripLocalDataSource,
+            firestore = FirebaseFirestore.getInstance(),
+            cloudinaryService = cloudinaryStorageService,
+            appContext = applicationContext
         )
     }
 }

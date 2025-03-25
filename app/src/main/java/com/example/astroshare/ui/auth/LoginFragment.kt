@@ -48,7 +48,8 @@ class LoginFragment : Fragment() {
             Toast.makeText(requireContext(), "Welcome back, ${currentUser.email}", Toast.LENGTH_SHORT).show()
 
             // Navigate straight to ProfileFragment (or Home)
-            findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            // If login is successful:
+            findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
             return // Don't continue with setting up login UI if already logged in
         }
 
@@ -72,7 +73,7 @@ class LoginFragment : Fragment() {
         loginViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
             }
         }
 

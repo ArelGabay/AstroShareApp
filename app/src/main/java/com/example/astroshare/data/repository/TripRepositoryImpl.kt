@@ -23,7 +23,9 @@ class TripRepositoryImpl(
     override suspend fun createTrip(trip: Trip): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             // Add the trip to Firestore
-            tripsCollection.add(trip).await()
+            val docRef = tripsCollection.document()
+            val tripWithId = trip.copy(id = docRef.id)
+            docRef.set(tripWithId).await()
             // Cache the trip locally
             localDataSource.insertTrip(trip.toEntity())
             Result.success(Unit)
@@ -34,14 +36,21 @@ class TripRepositoryImpl(
 
     override suspend fun getTrips(): List<Trip> = withContext(Dispatchers.IO) {
         try {
-            // Fetch trips from Firestore ordered by timestamp descending
+            // 1. Fetch trips from Firestore
             val snapshot = tripsCollection
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get().await()
+
+            // 2. Convert Firestore documents to Trip objects
             val trips = snapshot.toObjects(Trip::class.java)
-            // Cache fetched trips locally
-            localDataSource.insertTrips(trips.map { it.toEntity() })
-            trips
+
+            try {
+                localDataSource.insertTrips(trips.map { it.toEntity() })
+            } catch (e: Exception) {
+                // Log or ignore local caching failure
+            }
+
+            trips // ← return Firestore trips even if cache fails
         } catch (e: Exception) {
             // If there’s an error, return local cached data
             localDataSource.getAllTrips().map { it.toModel() }
@@ -78,5 +87,16 @@ class TripRepositoryImpl(
     override suspend fun uploadImage(imageUri: Uri): String = withContext(Dispatchers.IO) {
         // Use Cloudinary to upload the trip image; here we pass a tag "trip" to differentiate trip images.
         cloudinaryService.uploadUserImage("trip", imageUri, appContext)
+    }
+
+    // New implementation: Retrieve a single trip from Firestore by its ID.
+    override suspend fun getTripById(tripId: String): Trip? = withContext(Dispatchers.IO) {
+        try {
+            val documentSnapshot = tripsCollection.document(tripId).get().await()
+            // Return the Trip object (or null if not found)
+            documentSnapshot.toObject(Trip::class.java)
+        } catch (e: Exception) {
+            null
+        }
     }
 }

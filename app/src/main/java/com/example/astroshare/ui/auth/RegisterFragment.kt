@@ -82,6 +82,7 @@ class RegisterFragment : Fragment() {
                 // Sign out so that LoginFragment does not auto-redirect to profile
                 FirebaseAuth.getInstance().signOut()
                 Toast.makeText(requireContext(), "Registration successful! Please login.", Toast.LENGTH_SHORT).show()
+                //Change to Safe Args
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             }
         }

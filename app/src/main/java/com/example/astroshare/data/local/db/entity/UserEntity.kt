@@ -9,9 +9,9 @@ data class UserEntity(
     @PrimaryKey val id: String,
     val displayName: String,
     val email: String,
-    val bio: String?,                // <-- Now nullable
+    val bio: String?,
     val lastLogin: Long,
     val loggedIn: Boolean,
     val postsCount: Int,
-    val profilePicture: String?      // <-- Now nullable
+    val profilePicture: String?
 )

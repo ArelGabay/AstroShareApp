@@ -14,6 +14,7 @@ class ExploreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate a layout for this fragment or return a simple view
+        //Change to Safe Args
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
 }

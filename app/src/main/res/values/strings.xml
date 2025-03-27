@@ -9,4 +9,7 @@
     <string name="friends">Friends</string>
     <string name="profile">Profile</string>
     <string name="add_trip">Upload</string>
+    <string name="my_trips">My Trips</string>
+    <string name="edit_trip">Edit Profile</string>
+    <string name="delete_trip">Delete</string>
 </resources>

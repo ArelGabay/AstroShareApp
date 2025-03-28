@@ -7,7 +7,7 @@ import com.example.astroshare.data.local.db.entity.TripEntity
 
 @Database(
     entities = [UserEntity::class, TripEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {

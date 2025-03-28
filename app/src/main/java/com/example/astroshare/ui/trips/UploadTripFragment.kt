@@ -19,6 +19,7 @@ import com.example.astroshare.viewmodel.trips.TripsViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import com.example.astroshare.data.repository.UserRepository
 
 class UploadTripFragment : Fragment() {
 
@@ -30,11 +31,14 @@ class UploadTripFragment : Fragment() {
     private val tripsViewModel: TripsViewModel by viewModels {
         TripsViewModelFactory((requireActivity().application as AstroShareApp).tripRepository)
     }
+    private val userRepository: UserRepository by lazy {
+        (requireActivity().application as AstroShareApp).userRepository
+    }
 
+    // (The image picker code remains unchanged)
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             selectedImageUri = uri
-            // Show a preview
             Picasso.get()
                 .load(uri)
                 .placeholder(R.drawable.avatar)
@@ -45,10 +49,7 @@ class UploadTripFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentUploadtripBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,18 +57,11 @@ class UploadTripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnChooseImage.setOnClickListener {
-            pickImageLauncher.launch("image/*")
-        }
-
-        binding.btnUploadTrip.setOnClickListener {
-            uploadTrip()
-        }
+        binding.btnChooseImage.setOnClickListener { pickImageLauncher.launch("image/*") }
+        binding.btnUploadTrip.setOnClickListener { uploadTrip() }
 
         tripsViewModel.error.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
+            errorMsg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
         }
     }
 
@@ -106,11 +100,16 @@ class UploadTripFragment : Fragment() {
                     locationName = locationName,
                     locationDetails = locationDetails
                 )
+                // Update user postsCount
+                val user = userRepository.getUser(ownerId)
+                if (user != null) {
+                    val updatedUser = user.copy(postsCount = user.postsCount + 1)
+                    userRepository.updateUser(updatedUser)
+                }
                 tripsViewModel.createTrip(newTrip)
                 clearFields()
                 Toast.makeText(requireContext(), "Trip uploaded!", Toast.LENGTH_SHORT).show()
-                // Navigate back to the trip list (pop this fragment from the back stack)
-                requireActivity().onBackPressed()
+                requireActivity().onBackPressed() // Navigate back
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }

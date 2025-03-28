@@ -44,12 +44,13 @@ class LoginFragment : Fragment() {
         // Check if the user is already logged in
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            // Optional: You can check if user data exists in Room here before navigating
+            // Optional: if user data exists in Room here before navigating
             Toast.makeText(requireContext(), "Welcome back, ${currentUser.email}", Toast.LENGTH_SHORT).show()
 
-            // Navigate straight to ProfileFragment (or Home)
+            // Navigate straight to mainFlow
             // If login is successful:
-            findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
+            //Good one
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMainFlow())
             return // Don't continue with setting up login UI if already logged in
         }
 
@@ -66,6 +67,7 @@ class LoginFragment : Fragment() {
 
         // Register link click listener
         binding.btnRegisterLink.setOnClickListener {
+            //Change to Safe Args
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
@@ -73,6 +75,7 @@ class LoginFragment : Fragment() {
         loginViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
+                //Change to Safe Args
                 findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
             }
         }

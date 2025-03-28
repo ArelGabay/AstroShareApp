@@ -1,4 +1,3 @@
-
 package com.example.astroshare.viewmodel.trips
 
 import android.net.Uri
@@ -12,21 +11,16 @@ import kotlinx.coroutines.launch
 
 class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
 
-    // LiveData for trips list
     private val _trips = MutableLiveData<List<Trip>>()
     val trips: LiveData<List<Trip>> = _trips
 
-    // LiveData for loading state
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    // LiveData for error messages
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    /**
-     * Loads trips from the repository.
-     */
+    // Loads all trips
     fun loadTrips() {
         viewModelScope.launch {
             _loading.value = true
@@ -42,15 +36,12 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Creates a new trip.
-     */
+    // Creates a new trip
     fun createTrip(trip: Trip) {
         viewModelScope.launch {
             try {
                 val result = tripRepository.createTrip(trip)
                 if (result.isSuccess) {
-                    // Optionally reload trips to update UI
                     loadTrips()
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Error creating trip"
@@ -61,9 +52,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Updates an existing trip.
-     */
+    // Updates an existing trip
     fun updateTrip(tripId: String, updatedTrip: Trip) {
         viewModelScope.launch {
             try {
@@ -79,9 +68,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Deletes a trip.
-     */
+    // Deletes a trip
     fun deleteTrip(tripId: String) {
         viewModelScope.launch {
             try {
@@ -97,13 +84,12 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
         }
     }
 
-    /**
-     * Uploads an image and returns its download URL.
-     * You can call this function from your UI (if needed) to first upload the image, then create the triptr.
-     */
+    // New helper: Retrieve a single trip by its id.
+    suspend fun getTripById(tripId: String): Trip? {
+        return tripRepository.getTripById(tripId)
+    }
+
     suspend fun uploadImage(imageUri: Uri): String {
         return tripRepository.uploadImage(imageUri)
     }
-
-
 }

@@ -9,4 +9,7 @@ interface TripRepository {
     suspend fun updateTrip(tripId: String, updatedTrip: Trip): Result<Unit>
     suspend fun deleteTrip(tripId: String): Result<Unit>
     suspend fun uploadImage(imageUri: Uri): String
+
+    // New method to fetch a single Trip by its ID
+    suspend fun getTripById(tripId: String): Trip?
 }

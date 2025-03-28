@@ -15,11 +15,6 @@
         android:label="Trips" />
 
     <fragment
-        android:id="@+id/friendsFragment"
-        android:name="com.example.astroshare.ui.friends.FriendFragment"
-        android:label="Friends" />
-
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.astroshare.ui.profile.ProfileFragment"
         android:label="Profile" />

@@ -103,6 +103,10 @@ class EditProfileFragment : Fragment() {
                 }
             }
         }
+
+        binding.btnBackToLogin.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
+        }
     }
 
     override fun onDestroyView() {

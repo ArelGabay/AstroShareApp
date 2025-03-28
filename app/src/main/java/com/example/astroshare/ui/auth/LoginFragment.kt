@@ -67,7 +67,6 @@ class LoginFragment : Fragment() {
 
         // Register link click listener
         binding.btnRegisterLink.setOnClickListener {
-            //Change to Safe Args
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
@@ -75,7 +74,6 @@ class LoginFragment : Fragment() {
         loginViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
-                //Change to Safe Args
                 findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
             }
         }

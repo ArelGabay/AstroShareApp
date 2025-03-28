@@ -55,7 +55,7 @@ class RegisterFragment : Fragment() {
 
         // Set default avatar
         Picasso.get()
-            .load(R.drawable.avatar)
+            .load(R.drawable.default_profile)
             .resize(120, 120)
             .centerCrop()
             .into(binding.avatarImageView)
@@ -91,6 +91,10 @@ class RegisterFragment : Fragment() {
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.btnBackToLogin.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
         }
     }
 

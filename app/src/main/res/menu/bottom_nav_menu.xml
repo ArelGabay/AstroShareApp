@@ -9,10 +9,6 @@
         android:icon="@drawable/ic_trips"
         android:title="@string/trips" />
     <item
-        android:id="@+id/friendsFragment"
-        android:icon="@drawable/ic_friends"
-        android:title="@string/friends" />
-    <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"
         android:title="@string/profile" />

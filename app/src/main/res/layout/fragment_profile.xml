@@ -1,72 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-        <!-- Optional data binding -->
-    </data>
+    <!-- Background -->
+    <ImageView
+        android:id="@+id/bgImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/try_stars"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="24dp"
-        tools:ignore="ExtraText">
+    <!-- Profile Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/profileCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:backgroundTint="@color/semiTransparentCard"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeColor="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Profile Image -->
-        <ImageView
-            android:id="@+id/ivProfilePicture"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/avatar"
-            android:contentDescription="@string/profile_image"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/tvWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome!"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="32dp"/>
-
-        <TextView
-            android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
-
-        <TextView
-            android:id="@+id/tvEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textSize="18sp"
-            android:layout_marginBottom="32dp"/>
-
-        <!-- Logout Button -->
-        <Button
-            android:id="@+id/btnLogout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Logout"/>
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="24dp">
 
-        <Button
-            android:id="@+id/btnMyTrips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="My Trips"
-            android:layout_marginTop="16dp" />
+            <!-- Circular Avatar -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#00000000"
+                android:layout_marginBottom="12dp">
 
-        <Button
-            android:id="@+id/btnEditProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Profile" />
+                <ImageView
+                    android:id="@+id/ivProfilePicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/default_profile"
+                    android:contentDescription="@string/profile_image"/>
+            </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
-</layout>
+            <!-- Welcome -->
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome!"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Username Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:layout_marginBottom="12dp"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tvUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:layout_marginBottom="24dp"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tvEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Logout -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <!-- My Trips -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMyTrips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Trips"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Edit Profile -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Profile"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

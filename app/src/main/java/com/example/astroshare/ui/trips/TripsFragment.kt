@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.example.astroshare.viewmodel.trips.TripsViewModel
 import com.example.astroshare.viewmodel.trips.TripsViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import com.example.astroshare.data.repository.UserRepository
 
 class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
@@ -26,6 +28,10 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
     private val tripsViewModel: TripsViewModel by viewModels {
         TripsViewModelFactory((requireActivity().application as AstroShareApp).tripRepository)
+    }
+
+    private val userRepository: UserRepository by lazy {
+        (requireActivity().application as AstroShareApp).userRepository
     }
 
     // We pass the currentUserId to the adapter so it knows which trips belong to the current user.
@@ -81,6 +87,17 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
     override fun onDeleteTrip(trip: com.example.astroshare.data.model.Trip) {
         Toast.makeText(requireContext(), "Delete: ${trip.title}", Toast.LENGTH_SHORT).show()
+        // i need to -1 PostCount first
+        // Update user postsCount
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val user = userRepository.getUser(trip.ownerId)
+            if (user != null) {
+                val updatedUser = user.copy(postsCount = user.postsCount - 1)
+                userRepository.updateUser(updatedUser)
+            }
+        }
+
         tripsViewModel.deleteTrip(trip.id)
     }
 

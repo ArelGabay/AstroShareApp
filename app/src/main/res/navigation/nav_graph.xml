@@ -54,12 +54,6 @@
                 app:destination="@id/uploadTripFragment" />
         </fragment>
 
-        <!-- FRIENDS -->
-        <fragment
-            android:id="@+id/friendsFragment"
-            android:name="com.example.astroshare.ui.friends.FriendFragment"
-            android:label="Friends" />
-
         <!-- PROFILE -->
         <fragment
             android:id="@+id/profileFragment"

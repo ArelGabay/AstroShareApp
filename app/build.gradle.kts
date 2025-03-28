@@ -29,6 +29,17 @@ android {
 
         buildConfigField(
             "String",
+            "ASTRONOMY_API_APP_ID",
+            "\"${localProperties["ASTRONOMY_API_APP_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "ASTRONOMY_API_APP_SECRET",
+            "\"${localProperties["ASTRONOMY_API_APP_SECRET"]}\""
+        )
+
+        buildConfigField(
+            "String",
             "ASTRONOMY_API_AFTER_HASH",
             "\"${localProperties["ASTRONOMY_API_AFTER_HASH"]}\""
         )

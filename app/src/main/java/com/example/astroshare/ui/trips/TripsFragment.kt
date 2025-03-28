@@ -8,10 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.astroshare.AstroShareApp
 import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentTripsBinding
@@ -34,11 +34,13 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
         (requireActivity().application as AstroShareApp).userRepository
     }
 
-    // We pass the currentUserId to the adapter so it knows which trips belong to the current user.
     private lateinit var tripsAdapter: TripsAdapter
+    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
-    @androidx.annotation.OptIn(UnstableApi::class)
-    @OptIn(UnstableApi::class)
+    private var isLoading = false
+    private var isLastPage = false
+    private var currentPage = 1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,50 +49,74 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
         return binding.root
     }
 
-    @androidx.annotation.OptIn(UnstableApi::class)
-    @OptIn(UnstableApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+
+        if (currentUserId == null) {
             // If no user is logged in, navigate to login.
             findNavController().navigate(TripsFragmentDirections.actionTripsFragmentToLoginFragment())
             return
         }
+
         // Initialize adapter with the currentUserId and this fragment as the listener.
         tripsAdapter = TripsAdapter(currentUserId, listener = this)
         binding.recyclerViewTrips.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = tripsAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    if (!isLoading && !isLastPage) {
+                        if (firstVisibleItemPosition + visibleItemCount >= totalItemCount) {
+                            loadMoreTrips()
+                        }
+                    }
+                }
+            })
         }
 
+        // Observe trips once
         tripsViewModel.trips.observe(viewLifecycleOwner) { trips ->
             tripsAdapter.submitList(trips)
+            isLoading = false
+            isLastPage = trips.isEmpty()
         }
 
-        tripsViewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
-        }
-
-        tripsViewModel.loadTrips()
+        loadTrips()
 
         binding.fabUploadTrip.setOnClickListener {
             findNavController().navigate(TripsFragmentDirections.actionTripsFragmentToUploadTripFragment())
         }
     }
 
-    // TripItemListener implementation:
+    private fun loadTrips() {
+        isLoading = true
+        lifecycleScope.launch {
+            tripsViewModel.loadTrips(currentPage) // Pass current page number
+        }
+    }
+
+    private fun loadMoreTrips() {
+        if (isLoading || isLastPage) return
+        currentPage++
+        loadTrips()
+    }
+
     override fun onEditTrip(trip: com.example.astroshare.data.model.Trip) {
-        // Use Safe Args to navigate to the EditTripFragment, passing the trip ID as an argument.
         val action: NavDirections = TripsFragmentDirections.actionTripsFragmentToEditTripFragment(trip.id)
         findNavController().navigate(action)
     }
 
     override fun onDeleteTrip(trip: com.example.astroshare.data.model.Trip) {
         Toast.makeText(requireContext(), "Delete: ${trip.title}", Toast.LENGTH_SHORT).show()
-        // i need to -1 PostCount first
-        // Update user postsCount
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             val user = userRepository.getUser(trip.ownerId)
             if (user != null) {
                 val updatedUser = user.copy(postsCount = user.postsCount - 1)

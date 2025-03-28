@@ -20,12 +20,12 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    // Loads all trips
-    fun loadTrips() {
+    // Loads trips with pagination (page argument is used for paginated data)
+    fun loadTrips(page: Int) {
         viewModelScope.launch {
             _loading.value = true
             try {
-                val tripsList = tripRepository.getTrips()
+                val tripsList = tripRepository.getTrips(page)
                 _trips.value = tripsList
                 _error.value = null
             } catch (e: Exception) {
@@ -42,7 +42,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
             try {
                 val result = tripRepository.createTrip(trip)
                 if (result.isSuccess) {
-                    loadTrips()
+                    loadTrips(1) // Reload trips after creation
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Error creating trip"
                 }
@@ -58,7 +58,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
             try {
                 val result = tripRepository.updateTrip(tripId, updatedTrip)
                 if (result.isSuccess) {
-                    loadTrips()
+                    loadTrips(1) // Reload trips after update
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Error updating trip"
                 }
@@ -74,7 +74,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
             try {
                 val result = tripRepository.deleteTrip(tripId)
                 if (result.isSuccess) {
-                    loadTrips()
+                    loadTrips(1) // Reload trips after deletion
                 } else {
                     _error.value = result.exceptionOrNull()?.message ?: "Error deleting trip"
                 }
@@ -84,7 +84,7 @@ class TripsViewModel(private val tripRepository: TripRepository) : ViewModel() {
         }
     }
 
-    // New helper: Retrieve a single trip by its id.
+    // Helper function to get a trip by ID
     suspend fun getTripById(tripId: String): Trip? {
         return tripRepository.getTripById(tripId)
     }

@@ -5,6 +5,7 @@ import com.example.astroshare.data.local.TripLocalDataSource
 import com.example.astroshare.data.mappers.TripMappers.toEntity
 import com.example.astroshare.data.mappers.TripMappers.toModel
 import com.example.astroshare.data.model.Trip
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ class TripRepositoryImpl(
 ) : TripRepository {
 
     private val tripsCollection = firestore.collection("trips")
+    private var lastVisibleDocument: DocumentSnapshot? = null
 
     override suspend fun createTrip(trip: Trip): Result<Unit> = withContext(Dispatchers.IO) {
         try {
@@ -34,14 +36,25 @@ class TripRepositoryImpl(
         }
     }
 
-    override suspend fun getTrips(): List<Trip> = withContext(Dispatchers.IO) {
+    override suspend fun getTrips(page: Int): List<Trip> = withContext(Dispatchers.IO) {
         try {
-            // 1. Fetch trips from Firestore
-            val snapshot = tripsCollection
+            // Query to fetch the trips with pagination
+            var query = tripsCollection
                 .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get().await()
+                .limit(10) // Limit the number of trips per page
 
-            // 2. Convert Firestore documents to Trip objects
+            // If not the first page, get the last document of the previous page
+            if (page > 1) {
+                val lastVisible = lastVisibleDocument
+                query = query.startAfter(lastVisible)
+            }
+
+            val snapshot = query.get().await()
+
+            // Update the reference for the last visible document
+            lastVisibleDocument = snapshot.documents.lastOrNull()
+
+            // Convert Firestore documents to Trip objects
             val trips = snapshot.toObjects(Trip::class.java)
 
             try {
@@ -50,7 +63,7 @@ class TripRepositoryImpl(
                 // Log or ignore local caching failure
             }
 
-            trips // ← return Firestore trips even if cache fails
+            trips // Return Firestore trips even if cache fails
         } catch (e: Exception) {
             // If there’s an error, return local cached data
             localDataSource.getAllTrips().map { it.toModel() }

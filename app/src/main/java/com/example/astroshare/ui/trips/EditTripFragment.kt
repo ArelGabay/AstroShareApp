@@ -128,6 +128,10 @@ class EditTripFragment : Fragment() {
                 }
             }
         }
+
+        binding.btnBackToTripList.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
+        }
     }
 
     override fun onDestroyView() {

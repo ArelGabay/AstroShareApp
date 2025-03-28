@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.astroshare.AstroShareApp
 import com.example.astroshare.R
 import com.example.astroshare.data.model.Trip
@@ -62,6 +63,10 @@ class UploadTripFragment : Fragment() {
 
         tripsViewModel.error.observe(viewLifecycleOwner) { errorMsg ->
             errorMsg?.let { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }
+        }
+
+        binding.btnBackToLogin.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
         }
     }
 

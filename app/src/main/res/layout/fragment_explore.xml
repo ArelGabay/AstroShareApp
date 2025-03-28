@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
 
     android:padding="16dp"
-    tools:context=".ui.explore.ExploreFragment">
+    tools:context=".ui.explore.ExploreFragment"
     android:background="@drawable/try_stars">
 
     <LinearLayout

@@ -12,11 +12,13 @@ import com.example.astroshare.data.model.StarChartResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import android.util.Log
 
 fun getAuthorizationHeader(): String {
+    Log.d("AstronomyAPI", "Generating Authorization header")
     // Retrieve credentials from BuildConfig (injected from local.properties)
     var credentials = BuildConfig.ASTRONOMY_API_AFTER_HASH
-
+    Log.d("AstronomyAPI", "Credentials: $credentials")
 //    val encodedCredentials = Base64.encodeToString(credentials.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
     return credentials
 }

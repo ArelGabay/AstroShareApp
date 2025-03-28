@@ -1,9 +1,6 @@
-package com.example.astroshare.repository
+package com.example.astroshare.data.repository
 
 import android.content.Context
-import android.util.Base64
-import android.util.Log
-import com.example.astroshare.BuildConfig
 import com.example.astroshare.data.model.MoonPhaseRequest
 import com.example.astroshare.data.model.MoonPhaseResponse
 import com.example.astroshare.data.model.MoonObserver
@@ -21,6 +18,7 @@ import com.example.astroshare.data.remote.astronomy_api.getAuthorizationHeader
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
+import android.util.Log
 
 class MoonPhaseRepository(private val context: Context) {
 
@@ -39,7 +37,7 @@ class MoonPhaseRepository(private val context: Context) {
     suspend fun fetchMoonPhase(): MoonPhaseResponse? = withContext(Dispatchers.IO) {
         // Get current location. Return null if not available.
         val location = locationHelper.getLastKnownLocation() ?: return@withContext null
-
+        Log.d("MoonPhaseRepository", "Location: $location")
         val currentDate = LocalDate.now()
         val formattedDate = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 

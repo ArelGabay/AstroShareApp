@@ -1,4 +1,4 @@
-package com.example.astroshare.repository
+package com.example.astroshare.data.repository
 
 import com.example.astroshare.data.model.BodiesEventsResponse
 import android.content.Context

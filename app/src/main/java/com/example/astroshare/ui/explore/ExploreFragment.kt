@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentExploreBinding
-import com.example.astroshare.repository.BodiesEventsRepository
-import com.example.astroshare.repository.CombinedBodiesEventsResponse
-import com.example.astroshare.repository.MoonPhaseRepository
-import com.example.astroshare.repository.StarChartRepository
+import com.example.astroshare.data.repository.BodiesEventsRepository
+import com.example.astroshare.data.repository.CombinedBodiesEventsResponse
+import com.example.astroshare.data.repository.MoonPhaseRepository
+import com.example.astroshare.data.repository.StarChartRepository
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -87,6 +87,7 @@ class ExploreFragment : Fragment() {
                 LOCATION_PERMISSION_REQUEST_CODE
             )
         } else {
+            Log.d("ExploreFragment", "Location permission already granted")
             fetchMoonPhaseData()
             fetchStarChartData()
             fetchBodiesEventsData()

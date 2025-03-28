@@ -29,17 +29,6 @@ android {
 
         buildConfigField(
             "String",
-            "ASTRONOMY_API_APP_ID",
-            "\"${localProperties["ASTRONOMY_API_APP_ID"]}\""
-        )
-        buildConfigField(
-            "String",
-            "ASTRONOMY_API_APP_SECRET",
-            "\"${localProperties["ASTRONOMY_API_APP_SECRET"]}\""
-        )
-
-        buildConfigField(
-            "String",
             "ASTRONOMY_API_AFTER_HASH",
             "\"${localProperties["ASTRONOMY_API_AFTER_HASH"]}\""
         )
@@ -114,7 +103,6 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     // Picasso
     implementation ("com.squareup.picasso:picasso:2.8")
-
 
 
     implementation(libs.androidx.core.ktx)

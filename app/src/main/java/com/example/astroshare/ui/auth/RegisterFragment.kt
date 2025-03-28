@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.example.astroshare.AstroShareApp
 import com.example.astroshare.R
 import com.example.astroshare.databinding.FragmentRegisterBinding
@@ -17,6 +18,8 @@ import com.example.astroshare.viewmodel.auth.RegisterViewModel
 import com.example.astroshare.viewmodel.auth.RegisterViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
+
 
 class RegisterFragment : Fragment() {
 

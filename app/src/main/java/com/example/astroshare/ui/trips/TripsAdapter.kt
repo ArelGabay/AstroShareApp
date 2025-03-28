@@ -10,6 +10,8 @@ import com.example.astroshare.data.model.Trip
 import com.example.astroshare.databinding.ItemTripBinding
 import com.squareup.picasso.Picasso
 import android.util.Log
+import com.example.astroshare.R
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Adapter for binding Trip objects to a RecyclerView.
@@ -39,19 +41,31 @@ class TripsAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(trip: Trip, currentUserId: String) {
-            Log.d("TripsAdapter", "Binding: ${trip.title}, content=${trip.content}")
-            binding.tvTripTitle.text = trip.title
-            binding.tvTripLocation.text = trip.locationName
-            binding.tvTripContent.text = trip.content
+            // Fetch uploader display name from Firestore
+            FirebaseFirestore.getInstance().collection("users")
+                .document(trip.ownerId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val displayName = document.getString("displayName") ?: "Unknown"
+                    binding.tvUploadedBy.text = "$displayName"
+                }
+                .addOnFailureListener {
+                    binding.tvUploadedBy.text = "Uploaded by: Unknown"
+                }
 
+            binding.tvTripTitle.text = "${trip.title}"
+            binding.tvTripContent.text = "${trip.content}"
+            binding.tvTripLocation.text = "${trip.locationName}"
+
+            // Load image
             if (!trip.imageUrl.isNullOrEmpty()) {
                 Picasso.get()
                     .load(trip.imageUrl)
-                    .placeholder(com.example.astroshare.R.drawable.image_loading)
-                    .error(com.example.astroshare.R.drawable.image_loading)
+                    .placeholder(R.drawable.image_loading)
+                    .error(R.drawable.image_loading)
                     .into(binding.ivTripImage)
             } else {
-                binding.ivTripImage.setImageResource(com.example.astroshare.R.drawable.image_loading)
+                binding.ivTripImage.setImageResource(R.drawable.image_loading)
             }
 
             // Show edit/delete buttons only if the trip's owner matches the current user.

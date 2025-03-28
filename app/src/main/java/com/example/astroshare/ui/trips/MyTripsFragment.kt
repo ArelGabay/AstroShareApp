@@ -17,6 +17,7 @@ import com.example.astroshare.viewmodel.trips.MyTripsViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
+import com.example.astroshare.data.repository.UserRepository
 
 class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
@@ -25,6 +26,10 @@ class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
     private val myTripsViewModel: MyTripsViewModel by viewModels {
         MyTripsViewModelFactory((requireActivity().application as AstroShareApp).tripRepository)
+    }
+
+    private val userRepository: UserRepository by lazy {
+        (requireActivity().application as AstroShareApp).userRepository
     }
 
     private lateinit var tripsAdapter: TripsAdapter
@@ -56,6 +61,10 @@ class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
             tripsAdapter.submitList(trips)
         }
 
+        binding.btnBackToLogin.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
+        }
+
     }
 
     override fun onDestroyView() {
@@ -70,6 +79,15 @@ class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
     override fun onDeleteTrip(trip: Trip) {
         Toast.makeText(requireContext(), "Delete: ${trip.title}", Toast.LENGTH_SHORT).show()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val user = userRepository.getUser(trip.ownerId)
+            if (user != null) {
+                val updatedUser = user.copy(postsCount = user.postsCount - 1)
+                userRepository.updateUser(updatedUser)
+            }
+        }
+
         myTripsViewModel.deleteTrip(trip.id)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.astroshare.ui.profile
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,16 +53,17 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
-                binding.tvUsername.text = it.displayName
-                binding.tvEmail.text = it.email
+                binding.tvUsername.text = Editable.Factory.getInstance().newEditable(it.displayName)
+                binding.tvEmail.text = Editable.Factory.getInstance().newEditable(it.email)
+
                 if (!it.profilePicture.isNullOrEmpty()) {
                     Picasso.get()
                         .load(it.profilePicture)
                         .placeholder(R.drawable.avatar)
                         .error(R.drawable.avatar)
-                        .noFade()       // Disable fade-in animation for a faster visual response
-                        .fit()          // Resize the image to fit the ImageView
-                        .centerCrop()   // Crop the image centered
+                        .noFade()
+                        .fit()
+                        .centerCrop()
                         .into(binding.ivProfilePicture)
                 }
             }

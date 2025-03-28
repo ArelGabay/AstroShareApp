@@ -20,5 +20,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <ImageView
+            android:id="@+id/bgImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/try_stars"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Back Arrow Button -->
+        <ImageButton
+            android:id="@+id/btnBackToLogin"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back to login"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/black"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:backgroundTint="@color/purple_500"
+            android:elevation="8dp"
+            android:background="@drawable/circle_background" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

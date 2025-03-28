@@ -1,3 +1,11 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,6 +27,23 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField(
+            "String",
+            "ASTRONOMY_API_APP_ID",
+            "\"${localProperties["ASTRONOMY_API_APP_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "ASTRONOMY_API_APP_SECRET",
+            "\"${localProperties["ASTRONOMY_API_APP_SECRET"]}\""
+        )
+
+        buildConfigField(
+            "String",
+            "ASTRONOMY_API_AFTER_HASH",
+            "\"${localProperties["ASTRONOMY_API_AFTER_HASH"]}\""
+        )
+
         javaCompileOptions {
             annotationProcessorOptions {
                 argument("room.incremental", "true")
@@ -38,6 +63,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

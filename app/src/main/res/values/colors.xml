@@ -5,4 +5,5 @@
     <color name="teal_200">#03DAC5</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="semiTransparentCard">#CCF3E5F5</color> <!-- Light purple with ~80% opacity -->
 </resources>

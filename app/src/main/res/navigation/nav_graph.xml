@@ -5,7 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <!-- LOGIN + REGISTER -->
+    <!-- LOGIN & REGISTER -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.astroshare.ui.auth.LoginFragment"
@@ -13,10 +13,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment"/>
-        <!-- On successful login, go to mainFlow -->
         <action
             android:id="@+id/action_loginFragment_to_mainFlow"
-            app:destination="@id/mainFlow" />
+            app:destination="@id/mainFlow"/>
     </fragment>
 
     <fragment
@@ -28,35 +27,80 @@
             app:destination="@id/loginFragment"/>
     </fragment>
 
-    <!-- MAIN FLOW (Nested Graph for bottom nav) -->
+    <!-- MAIN FLOW (Bottom Navigation Area) -->
     <navigation
         android:id="@+id/mainFlow"
         app:startDestination="@id/exploreFragment">
 
+        <!-- EXPLORE -->
         <fragment
             android:id="@+id/exploreFragment"
             android:name="com.example.astroshare.ui.explore.ExploreFragment"
-            android:label="Explore"/>
+            android:label="Explore" />
 
+        <!-- TRIPS -->
         <fragment
             android:id="@+id/tripsFragment"
             android:name="com.example.astroshare.ui.trips.TripsFragment"
-            android:label="Trips"/>
+            android:label="Trips">
+            <action
+                android:id="@+id/action_tripsFragment_to_editTripFragment"
+                app:destination="@id/editTripFragment" />
+            <action
+                android:id="@+id/action_tripsFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+            <action
+                android:id="@+id/action_tripsFragment_to_uploadTripFragment"
+                app:destination="@id/uploadTripFragment" />
+        </fragment>
 
-        <fragment
-            android:id="@+id/friendsFragment"
-            android:name="com.example.astroshare.ui.friends.FriendFragment"
-            android:label="Friends"/>
-
+        <!-- PROFILE -->
         <fragment
             android:id="@+id/profileFragment"
             android:name="com.example.astroshare.ui.profile.ProfileFragment"
-            android:label="Profile"/>
+            android:label="Profile">
+            <action
+                android:id="@+id/action_profileFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+            <action
+                android:id="@+id/action_profileFragment_to_myTripsFragment"
+                app:destination="@id/myTripsFragment" />
+            <action
+                android:id="@+id/action_profileFragment_to_editProfileFragment"
+                app:destination="@id/editProfileFragment" />
+        </fragment>
 
+        <!-- UPLOAD TRIP (added here) -->
         <fragment
             android:id="@+id/uploadTripFragment"
             android:name="com.example.astroshare.ui.trips.UploadTripFragment"
             android:label="Upload Trip" />
 
+        <!-- MY TRIPS -->
+        <fragment
+            android:id="@+id/myTripsFragment"
+            android:name="com.example.astroshare.ui.trips.MyTripsFragment"
+            android:label="My Trips">
+
+            <action
+                android:id="@+id/action_myTripsFragment_to_editTripFragment"
+                app:destination="@id/editTripFragment" />
+        </fragment>
+
+        <!-- EDIT TRIP -->
+        <fragment
+            android:id="@+id/editTripFragment"
+            android:name="com.example.astroshare.ui.trips.EditTripFragment"
+            android:label="Edit Trip">
+            <argument
+                android:name="tripId"
+                app:argType="string" />
+        </fragment>
+
+        <!-- EDIT PROFILE -->
+        <fragment
+            android:id="@+id/editProfileFragment"
+            android:name="com.example.astroshare.ui.profile.EditProfileFragment"
+            android:label="Edit Profile" />
     </navigation>
 </navigation>

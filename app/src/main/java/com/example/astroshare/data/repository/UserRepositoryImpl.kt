@@ -15,7 +15,7 @@ class UserRepositoryImpl(
     private val localDataSource: UserLocalDataSource,
     private val authService: FirebaseAuthService,
     private val firestoreService: FirebaseFirestoreService,
-    private val cloudinaryService: CloudinaryStorageService,
+    val cloudinaryService: CloudinaryStorageService,
     private val appContext: Context
 ) : UserRepository {
 
@@ -47,6 +47,7 @@ class UserRepositoryImpl(
                 )
 
                 val userMap: Map<String, Any> = mapOf(
+                    "UserId" to userId,
                     "displayName" to newUser.displayName,
                     "email" to newUser.email,
                     "bio" to (newUser.bio ?: ""),

@@ -12,6 +12,9 @@ import com.example.astroshare.data.repository.TripRepository
 import com.example.astroshare.data.repository.TripRepositoryImpl
 import com.example.astroshare.data.repository.UserRepository
 import com.example.astroshare.data.repository.UserRepositoryImpl
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

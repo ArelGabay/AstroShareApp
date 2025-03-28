@@ -12,7 +12,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     kotlin("kapt")
-
+    id("kotlin-parcelize")
 }
 
 android {
@@ -91,6 +91,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.firebase:firebase-firestore:24.9.1")
     implementation("com.google.firebase:firebase-auth:22.0.0")
+    implementation ("com.google.firebase:firebase-appcheck-debug:16.0.0")
     // SQLite and Room
     implementation ("androidx.room:room-runtime:$room_version")
     implementation(libs.firebase.storage.ktx)

@@ -55,7 +55,7 @@ class RegisterFragment : Fragment() {
 
         // Set default avatar
         Picasso.get()
-            .load(R.drawable.avatar)
+            .load(R.drawable.default_profile)
             .resize(120, 120)
             .centerCrop()
             .into(binding.avatarImageView)
@@ -82,6 +82,7 @@ class RegisterFragment : Fragment() {
                 // Sign out so that LoginFragment does not auto-redirect to profile
                 FirebaseAuth.getInstance().signOut()
                 Toast.makeText(requireContext(), "Registration successful! Please login.", Toast.LENGTH_SHORT).show()
+                //Change to Safe Args
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             }
         }
@@ -90,6 +91,10 @@ class RegisterFragment : Fragment() {
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.btnBackToLogin.setOnClickListener {
+            findNavController().navigateUp() // goes back in nav stack
         }
     }
 

@@ -73,6 +73,7 @@ class RegisterFragment : Fragment() {
             val password = binding.editTextPassword.text.toString().trim()
 
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && selectedImageUri != null) {
+                binding.progressBar.visibility = View.VISIBLE  // Show spinner before starting
                 registerViewModel.registerWithImage(email, password, name, selectedImageUri!!)
             } else {
                 Toast.makeText(requireContext(), "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
@@ -81,6 +82,7 @@ class RegisterFragment : Fragment() {
 
         // Observe registration result
         registerViewModel.registeredUser.observe(viewLifecycleOwner) { user ->
+            binding.progressBar.visibility = View.GONE  // Hide spinner on success
             user?.let {
                 // Sign out so that LoginFragment does not auto-redirect to profile
                 FirebaseAuth.getInstance().signOut()
@@ -91,6 +93,7 @@ class RegisterFragment : Fragment() {
         }
 
         registerViewModel.error.observe(viewLifecycleOwner) { error ->
+            binding.progressBar.visibility = View.GONE  // Hide spinner on success
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }

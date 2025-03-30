@@ -101,6 +101,9 @@ class EditTripFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            // Show the spinner
+            binding.progressBar.visibility = View.VISIBLE
+
             lifecycleScope.launch {
                 try {
                     val imageUrl = if (selectedImageUri != null) {
@@ -125,6 +128,9 @@ class EditTripFragment : Fragment() {
                     findNavController().popBackStack()
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                } finally {
+                    // Hide spinner regardless of success or error
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }

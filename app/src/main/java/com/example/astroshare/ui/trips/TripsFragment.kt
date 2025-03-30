@@ -85,6 +85,7 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
         tripsViewModel.trips.observe(viewLifecycleOwner) { trips ->
             tripsAdapter.submitList(trips)
             isLoading = false
+            binding.progressBar.visibility = View.GONE  // Hide spinner when done
             isLastPage = trips.isEmpty()
         }
 
@@ -97,6 +98,7 @@ class TripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
     private fun loadTrips() {
         isLoading = true
+        binding.progressBar.visibility = View.VISIBLE  // Show spinner when loading starts
         lifecycleScope.launch {
             tripsViewModel.loadTrips(currentPage) // Pass current page number
         }

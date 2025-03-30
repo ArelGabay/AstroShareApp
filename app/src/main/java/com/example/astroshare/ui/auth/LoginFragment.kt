@@ -59,6 +59,7 @@ class LoginFragment : Fragment() {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
             if (email.isNotEmpty() && password.isNotEmpty()) {
+                binding.progressBar.visibility = View.VISIBLE  // Show spinner
                 loginViewModel.login(email, password)
             } else {
                 Toast.makeText(requireContext(), "Please fill in email and password", Toast.LENGTH_SHORT).show()
@@ -72,6 +73,7 @@ class LoginFragment : Fragment() {
 
         // Observe user LiveData to navigate on successful login.
         loginViewModel.user.observe(viewLifecycleOwner) { user ->
+            binding.progressBar.visibility = View.VISIBLE  // Show spinner
             user?.let {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_loginFragment_to_mainFlow)
@@ -80,6 +82,7 @@ class LoginFragment : Fragment() {
 
         // Observe error LiveData to display error messages.
         loginViewModel.error.observe(viewLifecycleOwner) { error ->
+            binding.progressBar.visibility = View.VISIBLE  // Show spinner
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }

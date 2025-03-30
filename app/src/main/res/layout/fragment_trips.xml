@@ -14,6 +14,18 @@
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
     <!-- FloatingActionButton to upload a new trip -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabUploadTrip"
@@ -23,7 +35,7 @@
         android:layout_marginBottom="72dp"
         android:contentDescription="@string/add_trip"
         android:src="@drawable/ic_upload"
-        app:backgroundTint="@color/purple_500"
+        app:backgroundTint="@color/white"
         android:elevation="12dp"
         android:layout_gravity="top|end" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

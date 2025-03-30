@@ -30,58 +30,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="24dp"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:layout_height="wrap_content">
 
-            <!-- Email -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Card content -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                android:padding="24dp"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
-            <!-- Password -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:layout_marginTop="16dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPassword"
+                <!-- Email -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Email">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Login Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                android:layout_marginTop="24dp"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/purple_500"
-                app:cornerRadius="50dp" />
+                <!-- Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:layout_marginTop="16dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Register Link (right below the button) -->
-            <TextView
-                android:id="@+id/btnRegisterLink"
+                <!-- Login Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Login"
+                    android:layout_marginTop="24dp"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/purple_500"
+                    app:cornerRadius="50dp" />
+
+                <!-- Register Link -->
+                <TextView
+                    android:id="@+id/btnRegisterLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have an account? Register"
+                    android:textColor="@color/purple_500"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
+            </LinearLayout>
+
+            <!-- Spinner overlay -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account? Register"
-                android:textColor="@color/purple_500"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
-        </LinearLayout>
+                android:visibility="gone"
+                android:layout_gravity="center"/>
+        </FrameLayout>
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

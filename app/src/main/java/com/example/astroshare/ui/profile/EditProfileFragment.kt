@@ -74,6 +74,9 @@ class EditProfileFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            // Show the spinner overlay
+            binding.progressBar.visibility = View.VISIBLE
+
             lifecycleScope.launch {
                 try {
                     val user = userRepository.getUser(currentUserId)
@@ -100,6 +103,9 @@ class EditProfileFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), e.message ?: "Error updating profile", Toast.LENGTH_SHORT).show()
+                } finally {
+                    // Hide the spinner regardless of outcome
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }

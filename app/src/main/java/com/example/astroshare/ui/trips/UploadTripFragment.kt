@@ -92,6 +92,9 @@ class UploadTripFragment : Fragment() {
         }
         val ownerId = currentUser.uid
 
+        // Show spinner on the card
+        binding.progressBar.visibility = View.VISIBLE
+
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val imageUrl = tripsViewModel.uploadImage(selectedImageUri!!)
@@ -113,10 +116,20 @@ class UploadTripFragment : Fragment() {
                 }
                 tripsViewModel.createTrip(newTrip)
                 clearFields()
-                Toast.makeText(requireContext(), "Trip uploaded!", Toast.LENGTH_SHORT).show()
-                requireActivity().onBackPressed() // Navigate back
+
+                // Show toast before navigation and use application context if needed
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Trip uploaded!", Toast.LENGTH_SHORT).show()
+                }
+
+                //Toast.makeText(requireContext(), "Trip uploaded!", Toast.LENGTH_SHORT).show()
+                //requireActivity().onBackPressed() // Navigate back
+                findNavController().popBackStack()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            } finally {
+                // Hide spinner in both success and error cases
+                binding.progressBar.visibility = View.GONE
             }
         }
     }

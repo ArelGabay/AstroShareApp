@@ -51,6 +51,9 @@ class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
             adapter = tripsAdapter
         }
 
+        // Show the spinner while loading trips
+        binding.progressBar.visibility = View.VISIBLE
+
         // Get the current user id from FirebaseAuth and load the user's trips
         lifecycleScope.launch {
             myTripsViewModel.loadMyTrips(currentUserId)
@@ -58,6 +61,8 @@ class MyTripsFragment : Fragment(), TripsAdapter.TripItemListener {
 
         // Observe LiveData updates and update the adapter's list
         myTripsViewModel.myTrips.observe(viewLifecycleOwner) { trips ->
+            // Show the spinner while loading trips
+            binding.progressBar.visibility = View.GONE  // Hide spinner once data is loaded
             tripsAdapter.submitList(trips)
         }
 
